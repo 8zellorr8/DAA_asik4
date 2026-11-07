@@ -148,6 +148,8 @@ The contracts, required algorithms, complexity targets, examples and rubric come
 
 OpenAI Codex helped explain the theory of dynamic programming and string-processing algorithms. This included reasoning about correctness and complexity, checking hypotheses about hash collisions and boundary cases, creating test cases, investigating possible bugs, and running tests and benchmarks.
 
+OpenAI Codex also helped write and organize the README, including the project overview, setup instructions and usage examples.
+
 OpenAI Codex also created additional tests for the Java solution. These include exhaustive small inputs, reproducible random cases, all printable ASCII characters, input transformations, 100,000-vertex chains and stars, 50,000-character suffix-array cases, dense false hash collisions, and Aho–Corasick dictionaries at the published limits.
 
 Verification used the instructor's public cases, independently computed reference results, validation of reconstructed solutions, repeated mixed requests and full-limit inputs. The benchmark checked exact outputs before measuring random, repetitive, dense-match and collision cases. The results and recorded files describe checks that were actually executed against the submitted implementation.
