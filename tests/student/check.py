@@ -309,6 +309,24 @@ def scale_cases():
                 for _ in range(10000)]
     add("aho-wide-trie", {"task": "aho", "patterns": patterns, "texts": [""] * 100},
         {"counts": [[0] * 10000 for _ in range(100)]})
+    texts = [
+        "".join(patterns[:5000]),
+        "".join(patterns[5000:]),
+        patterns[0] * 2500 + "".join(pattern[:-1] + "#" for pattern in patterns[:2500]),
+        patterns[-1] * 2500 + "".join(pattern[:-1] + "#" for pattern in patterns[5000:7500]),
+    ]
+    assert len(set(patterns)) == 10000 and sum(map(len, patterns)) == 100000
+    assert len(texts) == 4 and sum(map(len, texts)) == 200000
+    expected = []
+    for text in texts:
+        counts = dict.fromkeys(patterns, 0)
+        for start in range(len(text) - 9):
+            window = text[start:start + 10]
+            if window in counts:
+                counts[window] += 1
+        expected.append([counts[pattern] for pattern in patterns])
+    add("aho-wide-trie-nonempty", {"task": "aho", "patterns": patterns, "texts": texts},
+        {"counts": expected})
     add("aho-no-patterns-100-texts", {"task": "aho", "patterns": [], "texts": ["a" * 2000] * 100},
         {"counts": [[] for _ in range(100)]})
     for a, b, expected in [("a" * 1000, "b" * 1000, 0),

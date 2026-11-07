@@ -182,10 +182,10 @@ python tests/student/check.py
 
 Public checks cover 44 cases and repeat the complete set twice in one process: another 88 requests to check state reset.
 
-The student suite performs **19,375 request checks** covering random and boundary cases, exhaustive small inputs, reconstructed solutions, input transformations and maximum published sizes. This count includes repeated requests that check independent state. A successful run ends with:
+The student suite performs **19,376 request checks** covering random and boundary cases, exhaustive small inputs, reconstructed solutions, input transformations and maximum published sizes. This includes a 10,000-pattern Aho dictionary with four nonempty texts totaling 200,000 characters and independently computed counts. This count includes repeated requests that check independent state. A successful run ends with:
 
 ~~~text
-PASS all student checks: 19375 requests
+PASS all student checks: 19376 requests
 ~~~
 
 Independent oracles enumerate subsequences, merge orders and vertex subsets, use direct pattern matching, and sort suffix strings. Automated run history is available in [GitHub Actions](https://github.com/8zellorr8/DAA_asik4/actions).
