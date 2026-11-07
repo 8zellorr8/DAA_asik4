@@ -152,4 +152,3 @@ OpenAI Codex also created additional tests for the Java solution. These include 
 
 Verification used the instructor's public cases, independently computed reference results, validation of reconstructed solutions, repeated mixed requests and full-limit inputs. The benchmark checked exact outputs before measuring random, repetitive, dense-match and collision cases. The results and recorded files describe checks that were actually executed against the submitted implementation.
 
-Public checks report observed pass/fail results; they do not assign a grade, establish the outcome of hidden tests or submit anything to Moodle.
