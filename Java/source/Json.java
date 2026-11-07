@@ -1,17 +1,170 @@
-import java.util.*;
-/** Provided JSON transport; students implement Algorithms, not this parser. */
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+
 final class Json {
- private final String s; private int i=0;
- Json(String s){this.s=s;}
- static Object parse(String s){return new Json(s).value();}
- void ws(){while(i<s.length()&&Character.isWhitespace(s.charAt(i)))i++;}
- Object value(){ws();char c=s.charAt(i);
-  if(c=='"')return str();
-  if(c=='{'){i++;Map<String,Object> m=new LinkedHashMap<>();ws();if(s.charAt(i)=='}'){i++;return m;}do{String k=str();ws();i++;m.put(k,value());ws();char z=s.charAt(i++);if(z=='}')return m;ws();}while(true);}
-  if(c=='['){i++;List<Object> a=new ArrayList<>();ws();if(s.charAt(i)==']'){i++;return a;}do{a.add(value());ws();char z=s.charAt(i++);if(z==']')return a;}while(true);}
-  if(s.startsWith("null",i)){i+=4;return null;}if(s.startsWith("true",i)){i+=4;return true;}if(s.startsWith("false",i)){i+=5;return false;}
-  int j=i;if(c=='-')i++;while(i<s.length()&&Character.isDigit(s.charAt(i)))i++;return Long.parseLong(s.substring(j,i));
- }
- String str(){ws();i++;StringBuilder b=new StringBuilder();while(true){char c=s.charAt(i++);if(c=='"')return b.toString();if(c=='\\'){c=s.charAt(i++);switch(c){case 'n':c='\n';break;case 'r':c='\r';break;case 't':c='\t';break;case 'b':c='\b';break;case 'f':c='\f';break;case 'u':c=(char)Integer.parseInt(s.substring(i,i+4),16);i+=4;break;}}b.append(c);}}
- static String write(Object x){if(x==null)return "null";if(x instanceof String){String s=(String)x;StringBuilder b=new StringBuilder("\"");for(char c:s.toCharArray()){if(c=='"'||c=='\\')b.append('\\').append(c);else if(c<32)b.append(String.format("\\u%04x",(int)c));else b.append(c);}return b.append('"').toString();}if(x instanceof Map){StringJoiner j=new StringJoiner(",","{","}");for(Object eo:((Map<?,?>)x).entrySet()){Map.Entry<?,?> e=(Map.Entry<?,?>)eo;j.add(write(e.getKey().toString())+":"+write(e.getValue()));}return j.toString();}if(x instanceof Iterable){StringJoiner j=new StringJoiner(",","[","]");for(Object e:(Iterable<?>)x)j.add(write(e));return j.toString();}if(x.getClass().isArray()){StringJoiner j=new StringJoiner(",","[","]");for(int i=0;i<java.lang.reflect.Array.getLength(x);i++)j.add(write(java.lang.reflect.Array.get(x,i)));return j.toString();}return x.toString();}
+    private final String text;
+    private int index;
+
+    private Json(String text) {
+        this.text = text;
+    }
+
+    static Object parse(String text) {
+        return new Json(text).readValue();
+    }
+
+    private void skipWhitespace() {
+        while (index < text.length() && Character.isWhitespace(text.charAt(index))) {
+            index++;
+        }
+    }
+
+    private Object readValue() {
+        skipWhitespace();
+        char current = text.charAt(index);
+        if (current == '"') {
+            return readString();
+        }
+        if (current == '{') {
+            return readObject();
+        }
+        if (current == '[') {
+            return readArray();
+        }
+        if (text.startsWith("null", index)) {
+            index += 4;
+            return null;
+        }
+        if (text.startsWith("true", index)) {
+            index += 4;
+            return true;
+        }
+        if (text.startsWith("false", index)) {
+            index += 5;
+            return false;
+        }
+        int start = index;
+        if (current == '-') {
+            index++;
+        }
+        while (index < text.length() && Character.isDigit(text.charAt(index))) {
+            index++;
+        }
+        return Long.parseLong(text.substring(start, index));
+    }
+
+    private Map<String, Object> readObject() {
+        index++;
+        Map<String, Object> result = new LinkedHashMap<>();
+        skipWhitespace();
+        if (text.charAt(index) == '}') {
+            index++;
+            return result;
+        }
+        while (true) {
+            String key = readString();
+            skipWhitespace();
+            index++;
+            result.put(key, readValue());
+            skipWhitespace();
+            if (text.charAt(index++) == '}') {
+                return result;
+            }
+            skipWhitespace();
+        }
+    }
+
+    private List<Object> readArray() {
+        index++;
+        List<Object> result = new ArrayList<>();
+        skipWhitespace();
+        if (text.charAt(index) == ']') {
+            index++;
+            return result;
+        }
+        while (true) {
+            result.add(readValue());
+            skipWhitespace();
+            if (text.charAt(index++) == ']') {
+                return result;
+            }
+        }
+    }
+
+    private String readString() {
+        skipWhitespace();
+        index++;
+        StringBuilder result = new StringBuilder();
+        while (true) {
+            char current = text.charAt(index++);
+            if (current == '"') {
+                return result.toString();
+            }
+            if (current == '\\') {
+                current = text.charAt(index++);
+                switch (current) {
+                    case 'n': current = '\n'; break;
+                    case 'r': current = '\r'; break;
+                    case 't': current = '\t'; break;
+                    case 'b': current = '\b'; break;
+                    case 'f': current = '\f'; break;
+                    case 'u':
+                        current = (char) Integer.parseInt(text.substring(index, index + 4), 16);
+                        index += 4;
+                        break;
+                    default: break;
+                }
+            }
+            result.append(current);
+        }
+    }
+
+    static String write(Object value) {
+        if (value == null) {
+            return "null";
+        }
+        if (value instanceof String) {
+            return writeString((String) value);
+        }
+        if (value instanceof Map) {
+            StringJoiner result = new StringJoiner(",", "{", "}");
+            for (Map.Entry<?, ?> entry : ((Map<?, ?>) value).entrySet()) {
+                result.add(write(entry.getKey().toString()) + ":" + write(entry.getValue()));
+            }
+            return result.toString();
+        }
+        if (value instanceof Iterable) {
+            StringJoiner result = new StringJoiner(",", "[", "]");
+            for (Object item : (Iterable<?>) value) {
+                result.add(write(item));
+            }
+            return result.toString();
+        }
+        if (value.getClass().isArray()) {
+            StringJoiner result = new StringJoiner(",", "[", "]");
+            for (int i = 0; i < Array.getLength(value); i++) {
+                result.add(write(Array.get(value, i)));
+            }
+            return result.toString();
+        }
+        return value.toString();
+    }
+
+    private static String writeString(String text) {
+        StringBuilder result = new StringBuilder("\"");
+        for (char current : text.toCharArray()) {
+            if (current == '"' || current == '\\') {
+                result.append('\\').append(current);
+            } else if (current < 32) {
+                result.append(String.format("\\u%04x", (int) current));
+            } else {
+                result.append(current);
+            }
+        }
+        return result.append('"').toString();
+    }
 }

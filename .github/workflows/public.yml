@@ -16,11 +16,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-      - name: Starter compiles and launches
-        run: python -c "import subprocess; [subprocess.run(['python','tools/run.py','--language',lang,'--setup'],check=True) for lang in ['Java','Python','Cpp','CSharp']]"
-      - name: Algorithm examples in student repositories
-        if: github.repository != 'RZhaniya/daa-assignment-4-archive'
-        run: python -c "import json,subprocess; lang=json.load(open('submission.json'))['language']; assert lang in ['Java','Python','Cpp','CSharp']; subprocess.run(['python','tools/run.py','--language',lang,'--check'],check=True)"
+      - name: Java startup
+        run: python tools/run.py --setup
+      - name: Public checks
+        run: python tools/run.py --check
+      - name: Student boundary, oracle and scale checks
+        run: python tests/student/check.py
