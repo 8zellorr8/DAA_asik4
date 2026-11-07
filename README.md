@@ -1,78 +1,78 @@
-# DAA Assignment 4 — динамическое программирование и обработка строк
+# DAA Assignment 4 — Dynamic Programming and String Processing
 
-Консольный проект на Java для сравнения последовательностей, оптимального объединения блоков, выбора совместимых вершин дерева и точного поиска в тексте. Реализован на основе [официального шаблона Assignment 4](https://github.com/RZhaniya/daa-assignment-4-archive) курса Design and Analysis of Algorithms.
+A Java command-line project for comparing sequences, finding an optimal order of adjacent block merges, selecting compatible tree vertices, and exact text matching. It is based on the [official Assignment 4 template](https://github.com/RZhaniya/daa-assignment-4-archive) for the Design and Analysis of Algorithms course.
 
-Проект предназначен для изучения и проверки алгоритмов: студент может исследовать их поведение, а преподаватель или жюри — воспроизвести примеры, проверить ответы и сравнить время поиска. Единый формат запросов позволяет запускать разные задачи одним процессом.
+The project provides a reproducible way to study and evaluate algorithms. Students can explore their behaviour, while instructors or reviewers can run examples, validate results and compare search timings. A shared request format allows different tasks to run in one process.
 
-## Что реализовано
+## Implemented features
 
-| Команда | Назначение | Результат |
+| Command | Purpose | Result |
 |---|---|---|
-| `lcs` | Найти наибольшую общую подпоследовательность двух строк | Длина и одна оптимальная подпоследовательность |
-| `merge` | Найти минимальную стоимость объединения соседних блоков с сохранением порядка | Стоимость и последовательность слияний |
-| `tree` | Выбрать вершины дерева с максимальной суммой весов без соседних выбранных вершин | Общий вес и список вершин |
-| `naive` | Найти все вхождения шаблона прямым сравнением символов | Начальные позиции вхождений |
-| `kmp` | Найти все вхождения с помощью префикс-функции и KMP | Начальные позиции вхождений |
-| `rk` | Найти все вхождения методом Рабина — Карпа с проверкой совпавших хешей | Точные позиции без ложных совпадений |
-| `suffix` | Построить суффиксный массив и LCP алгоритмом Касаи | Массивы SA/LCP и самая длинная повторяющаяся подстрока |
-| `aho` | Найти шаблоны словаря в нескольких независимых текстах алгоритмом Ахо — Корасик | Матрица количества вхождений |
+| `lcs` | Find a longest common subsequence of two strings | Its length and one optimal subsequence |
+| `merge` | Minimize the cost of merging adjacent blocks while preserving their order | Minimum cost and a chronological merge plan |
+| `tree` | Find a maximum-weight independent set in a tree | Total weight and selected vertex IDs |
+| `naive` | Find every pattern occurrence using direct character comparisons | Starting positions |
+| `kmp` | Find every occurrence using the prefix function and KMP | Starting positions |
+| `rk` | Search using Rabin–Karp with character verification of hash candidates | Exact positions without collision-induced false matches |
+| `suffix` | Build a suffix array and Kasai LCP array | SA, LCP and a longest repeated substring |
+| `aho` | Count dictionary patterns in independent texts using Aho–Corasick | A matrix of occurrence counts |
 
-Также реализованы восстановление оптимальных решений, обработка пустых входов по контракту каждой команды, поиск с перекрытиями и независимая обработка последовательных запросов. Суммы весов и стоимости хранятся в 64-битном типе `long`. Служебная команда `ping` проверяет готовность программы.
+The implementation reconstructs optimal solutions, handles empty inputs according to each command's contract, includes overlapping matches and resets task state between requests. Total weights and merge costs use 64-bit `long` arithmetic. A separate `ping` command checks program startup.
 
-## Как работает решение
+## How it works
 
-1. Пользователь создаёт UTF-8-файл с запросами: каждый JSON-объект занимает отдельную строку.
-2. В поле `task` указывается команда, в остальных полях — её входные данные.
-3. Python-скрипт компилирует Java-код и передаёт файл программе.
-4. `Main` разбирает запрос через `Json` и вызывает соответствующий метод `Algorithms`.
-5. Для каждого запроса программа выводит отдельный JSON-объект с результатом.
+1. Create a UTF-8 file with one JSON request per line.
+2. Set the `task` field to a command and supply its required input fields.
+3. The Python launcher compiles the Java sources and sends the file to the program.
+4. `Main` parses each request through `Json` and calls the corresponding `Algorithms` method.
+5. The program returns one JSON result per request.
 
-Позиции символов, индексы блоков и номера вершин начинаются с нуля. Порядок полей внутри JSON-объекта не важен. В стандартный вывод идут результаты; сообщения сборки и запуска выводятся отдельно в stderr.
+Character positions, block indices and vertex IDs are zero-based. JSON object-field order is unrestricted. Results go to stdout; build and launcher diagnostics go to stderr.
 
-## Технологии
+## Technologies
 
-| Компонент | Использование |
+| Component | Role |
 |---|---|
-| Java 17+ | Все восемь алгоритмов, ввод/вывод, восстановление решений |
-| Стандартная библиотека Java | Коллекции, массивы, сортировка, файловые потоки и измерение времени |
-| Собственный класс `Json` на основе транспорта шаблона | Чтение и запись JSON для предусмотренного формата входов |
-| Python 3.12+ и стандартная библиотека | Сборка, запуск, публичные проверки и дополнительные тесты |
-| Git и GitHub | Хранение исходников и версий |
-| GitHub Actions | Автоматические проверки на Ubuntu 24.04 с Temurin 17 и Python 3.12 |
+| Java 17+ | All eight algorithms, input/output and solution reconstruction |
+| Java standard library | Collections, arrays, sorting, streams and timing |
+| Local `Json` class based on the template transport | Parsing and serialization for the published input format |
+| Python 3.12+ and its standard library | Compilation, execution, public checks and student tests |
+| Git and GitHub | Source control and repository hosting |
+| GitHub Actions | Automated checks on Ubuntu 24.04 with Temurin 17 and Python 3.12 |
 
-Maven, Gradle, сторонние Java-библиотеки и установка Python-пакетов не требуются. AI-модели, внешние API и базы данных не участвуют в работе программы. Использованная при разработке помощь ИИ описана в [ANALYSIS.md](ANALYSIS.md#sources-and-ai-assistance).
+Maven, Gradle, third-party Java libraries and Python package installation are not required. The running program does not use AI models, external APIs or a database. Development assistance is documented in [ANALYSIS.md](ANALYSIS.md#sources-and-ai-assistance).
 
-## Архитектура проекта
+## Architecture
 
 ~~~text
 Java/source/
-  Main.java                  Чтение JSON Lines и выбор команды
-  Json.java                  Разбор и формирование JSON
-  Algorithms.java            Реализации алгоритмов
+  Main.java                  JSON Lines input and command dispatch
+  Json.java                  JSON parsing and serialization
+  Algorithms.java            Algorithm implementations
 tools/
-  run.py                     Компиляция, запуск и публичные проверки
-  public_validate.py         Проверка формата, ответа и восстановленного решения
+  run.py                     Build, execution and public checks
+  public_validate.py         Result schema, value and witness validation
 tests/
-  public.json                44 публичных примера и граничных случая
+  public.json                44 public examples and boundary cases
   student/
-    check.py                 Дополнительные проверки и независимые эталоны
-    SearchBenchmark.java     Сравнение naive, KMP и Rabin–Karp
-    benchmark-results.md     Измеренные времена и медианы
-docs/guide/CONTRACTS.md       Форматы запросов, ответов и ограничения
-submission.json             Выбранный язык: Java
-ANALYSIS.md                 Корректность, сложности, тесты и анализ замеров
-.github/workflows/public.yml Автоматизация проверок
+    check.py                 Additional checks and independent oracles
+    SearchBenchmark.java     Comparison of naive, KMP and Rabin–Karp
+    benchmark-results.md     Recorded timings and medians
+docs/guide/CONTRACTS.md       Request schemas, output fields and limits
+submission.json             Selected language: Java
+ANALYSIS.md                 Correctness, complexity, tests and measurements
+.github/workflows/public.yml Automated checks
 ~~~
 
-Связь компонентов: файл запросов → `tools/run.py` → `Main` → `Json` и `Algorithms` → JSON-ответы. При тестировании ответы дополнительно проходят проверку в `public_validate.py`.
+Data flow: request file → `tools/run.py` → `Main` → `Json` and `Algorithms` → JSON results. During testing, `public_validate.py` also checks the returned values and reconstructed solutions.
 
-Состояние алгоритмов создаётся заново для каждого запроса. Внутри одной команды `aho` автомат словаря используется для всех её текстов, а счётчики для каждого текста обнуляются.
+Algorithm state is local to a request. Within one `aho` request, the dictionary automaton is reused across texts, with fresh visit counts for each text.
 
-## Установка и запуск
+## Installation and execution
 
-### 1. Подготовить окружение
+### 1. Prepare the environment
 
-Установите Git, JDK 17 или новее и Python 3.12 или новее. Проверьте, что команды доступны в терминале:
+Install Git, JDK 17 or newer, and Python 3.12 or newer. Check that the commands are available:
 
 ~~~sh
 git --version
@@ -81,40 +81,40 @@ javac -version
 python --version
 ~~~
 
-Нужен именно JDK: команда `javac` должна быть доступна. На Windows при необходимости используйте `py -3` вместо `python`; выбранный интерпретатор должен быть версии 3.12+.
+A JDK is required: `javac` must be available on PATH. On Windows, `py -3` can replace `python` if it selects Python 3.12 or newer.
 
-### 2. Получить проект
+### 2. Clone the repository
 
 ~~~sh
 git clone https://github.com/8zellorr8/DAA_asik4.git
 cd DAA_asik4
 ~~~
 
-Все следующие команды выполняются из корня репозитория.
+Run all remaining commands from the repository root.
 
-### 3. Проверить сборку
+### 3. Check the build
 
 ~~~sh
 python tools/run.py --setup
 ~~~
 
-Ожидаемый результат: `PASS setup: ping`. Скрипт создаёт `Java/build`, компилирует исходники с `--release 17` и запускает Java с лимитом кучи 384 MiB. Проверка setup подтверждает сборку и обмен сообщениями; результаты алгоритмов проверяются отдельными командами ниже.
+Expected result: `PASS setup: ping`. The launcher creates `Java/build`, compiles with `--release 17` and runs Java with a 384 MiB heap limit. Setup checks compilation and transport; algorithm results are checked separately below.
 
-### 4. Запустить свои запросы
+### 4. Run a request file
 
-Подготовьте UTF-8-файл `requests.jsonl` и выполните:
+Create a UTF-8 file named `requests.jsonl`, then run:
 
 ~~~sh
 python tools/run.py --input requests.jsonl
 ~~~
 
-Точные поля всех запросов приведены в [CONTRACTS.md](docs/guide/CONTRACTS.md). После сборки можно также запустить `java -Xmx384m -cp Java/build Main` и передавать JSON Lines через стандартный ввод.
+See [CONTRACTS.md](docs/guide/CONTRACTS.md) for the exact fields of each command. After compilation, you can also run `java -Xmx384m -cp Java/build Main` and send JSON Lines through standard input.
 
-Ключи API, файл `.env` и регистрация во внешних сервисах для локального запуска не нужны.
+Local execution does not require API keys, an `.env` file or external service accounts.
 
-## Как проверить решение: сценарий для жюри
+## Reproducible demonstration
 
-После `--setup` создайте файл `Java/build/demo.jsonl` со следующим содержимым. Каждая строка — отдельный запрос:
+After running setup, create `Java/build/demo.jsonl` with the following contents. Each line is a separate request:
 
 ~~~json
 {"task":"lcs","a":"tea_time","b":"team"}
@@ -127,13 +127,13 @@ python tools/run.py --input requests.jsonl
 {"task":"aho","patterns":["he","she","he"],"texts":["sheshe","sheshe",""]}
 ~~~
 
-Запустите:
+Run:
 
 ~~~sh
 python tools/run.py --input Java/build/demo.jsonl
 ~~~
 
-Ожидаемые ответы, с точностью до порядка полей:
+Expected results, allowing a different object-field order:
 
 ~~~json
 {"length":4,"sequence":"team"}
@@ -146,75 +146,75 @@ python tools/run.py --input Java/build/demo.jsonl
 {"counts":[[2,2,2],[2,2,2],[0,0,0]]}
 ~~~
 
-Этот сценарий показывает все восемь команд, восстановление решений, перекрывающиеся вхождения, проверку коллизии Rabin–Karp, повторяющиеся шаблоны и независимость текстов. Для других входов с несколькими оптимумами допустимы разные корректные восстановленные решения.
+This demonstration covers all eight commands, solution reconstruction, overlaps, an RK hash collision, duplicate patterns and independent texts. Other inputs may have several valid optimal reconstructions.
 
-### Автоматические тесты
+### Automated tests
 
 ~~~sh
 python tools/run.py --check
 python tests/student/check.py
 ~~~
 
-Публичная проверка содержит 44 случая и повторяет их дважды в одном процессе — ещё 88 запросов для проверки сброса состояния.
+Public checks cover 44 cases and repeat the complete set twice in one process: another 88 requests to check state reset.
 
-Дополнительный набор выполняет **19 375 проверок запросов**: случайные и граничные случаи, полный перебор небольших входов, проверку восстановленных решений, преобразования входных данных и максимальные размеры из спецификации. В это число входят повторные запросы, проверяющие независимость состояния. Успешный запуск заканчивается строкой:
+The student suite performs **19,375 request checks** covering random and boundary cases, exhaustive small inputs, reconstructed solutions, input transformations and maximum published sizes. This count includes repeated requests that check independent state. A successful run ends with:
 
 ~~~text
 PASS all student checks: 19375 requests
 ~~~
 
-Тесты используют независимые способы получения ожидаемых ответов: перебор подпоследовательностей, порядков слияния и подмножеств вершин, прямой поиск и сортировку суффиксов. Историю автоматических запусков можно посмотреть в [GitHub Actions](https://github.com/8zellorr8/DAA_asik4/actions).
+Independent oracles enumerate subsequences, merge orders and vertex subsets, use direct pattern matching, and sort suffix strings. Automated run history is available in [GitHub Actions](https://github.com/8zellorr8/DAA_asik4/actions).
 
-### Сравнение поисковых алгоритмов
+### Search comparison
 
-После сборки:
+After compilation:
 
 ~~~sh
 javac --release 17 -encoding UTF-8 -cp Java/build -d Java/build tests/student/SearchBenchmark.java
 java -Xmx384m -cp Java/build SearchBenchmark
 ~~~
 
-Сравнение использует одинаковые входы трёх размеров для naive, KMP и Rabin–Karp. Есть случайные строки, повторяющиеся строки, плотные совпадения и специально подобранные коллизии. До замеров проверяются ответы; затем выполняются прогрев JVM, три измерения и вычисление медианы.
+The benchmark gives naive, KMP and Rabin–Karp identical inputs at three increasing sizes. It includes random strings, repetitive near-misses, dense matches and deliberately constructed collisions. Correctness is checked before JVM warm-up and three measured runs per algorithm and case.
 
-Записанные результаты находятся в [benchmark-results.md](tests/student/benchmark-results.md), методика и объяснение — в [ANALYSIS.md](ANALYSIS.md#search-comparison). Время зависит от оборудования и окружения; замеры не заменяют доказательство сложности.
+Recorded results are in [benchmark-results.md](tests/student/benchmark-results.md). The methodology and interpretation are in [ANALYSIS.md](ANALYSIS.md#search-comparison). Timings depend on hardware and runtime conditions; they do not prove asymptotic bounds.
 
-## Данные и интеграции
+## Data and integrations
 
-- Рабочие данные — строки, размеры блоков, веса и рёбра дерева, переданные пользователем в JSON Lines.
-- Форматы, публичные тесты и базовый транспорт получены из [шаблона преподавателя](https://github.com/RZhaniya/daa-assignment-4-archive/tree/4686cc60334aa189c2ac168e10a82d882b32858c).
-- Дополнительные тестовые данные генерируются локально с фиксированными seed; параметры указаны в тестах и анализе.
-- GitHub Actions запускает проверки при push, pull request и ручном запуске workflow.
-- Данные не загружаются из внешних API; программа не выполняет сетевых запросов и не хранит результаты в базе данных.
+- Runtime inputs are user-provided strings, block sizes, tree weights and edges in JSON Lines format.
+- Contracts, public tests and the initial transport originate from the [instructor's template](https://github.com/RZhaniya/daa-assignment-4-archive/tree/4686cc60334aa189c2ac168e10a82d882b32858c).
+- Additional test inputs are generated locally with fixed seeds documented in the tests and analysis.
+- GitHub Actions runs checks on pushes, pull requests and manual workflow dispatch.
+- The program does not download input from external APIs, make network requests or persist results in a database.
 
-## Ограничения текущей версии
+## Limitations
 
-Интерфейс — консольный. Веб-интерфейс, HTTP API, учётные записи и постоянное хранение результатов не реализованы.
+The interface is command-line only. A web UI, HTTP API, user accounts and persistent result storage are not implemented.
 
-Поддерживаются строки из печатных ASCII-символов с кодами 32–126; регистр учитывается. Кириллица и произвольный Unicode не входят в контракт алгоритмов. Предполагаются корректные входы по спецификации; транспорт JSON не предназначен для проверки всех произвольных JSON-документов.
+Algorithm inputs use printable ASCII codes 32–126 and are case-sensitive. Cyrillic and arbitrary Unicode are outside the published contract. Inputs are assumed to satisfy the specification; the JSON transport is not a general-purpose validator for arbitrary JSON documents.
 
-| Команда | Основные пределы входа |
+| Command | Main input limits |
 |---|---|
-| `lcs` | Каждая строка до 1 000 символов, произведение длин до 1 000 000 |
-| `merge` | До 200 блоков, размер каждого от 0 до 1 000 000 000 |
-| `tree` | До 100 000 вершин, веса от −1 000 000 000 до 1 000 000 000; рёбра должны образовывать дерево |
-| `naive` | Текст и шаблон до 3 000 символов каждый |
-| `kmp` | Текст до 200 000, шаблон до 100 000 символов |
-| `rk` | Каждая строка до 10 000 символов, произведение длин до 20 000 000 |
-| `suffix` | Текст до 50 000 символов |
-| `aho` | До 10 000 непустых шаблонов, суммарная длина до 100 000; до 100 текстов суммарной длиной до 200 000 |
+| `lcs` | Each string up to 1,000 characters; length product up to 1,000,000 |
+| `merge` | Up to 200 blocks; each size from 0 to 1,000,000,000 |
+| `tree` | Up to 100,000 vertices; weights from −1,000,000,000 to 1,000,000,000; edges must form a tree |
+| `naive` | Text and pattern up to 3,000 characters each |
+| `kmp` | Text up to 200,000; pattern up to 100,000 characters |
+| `rk` | Each string up to 10,000 characters; length product up to 20,000,000 |
+| `suffix` | Text up to 50,000 characters |
+| `aho` | Up to 10,000 nonempty patterns, total length up to 100,000; up to 100 texts, total length up to 200,000 |
 
-Rabin–Karp использует учебные параметры base 31 / modulus 101 и всегда проверяет символы при совпадении хешей. Поэтому результат точный, но время в худшем случае может быть квадратичным. Все границы и схемы ответов приведены в [контрактах](docs/guide/CONTRACTS.md).
+Rabin–Karp uses the assignment's base 31 and modulus 101, with character verification after equal hashes. Results are exact, but worst-case running time can be quadratic. Complete limits and output schemas are in [CONTRACTS.md](docs/guide/CONTRACTS.md).
 
-В этой копии реализован только Java-вариант. Унаследованный запускатель перечисляет и другие языки, но их исходники в репозитории отсутствуют. Локальный запускатель ограничивает компиляцию 60 секундами и выполнение каждого пакета или файла запросов 20 секундами.
+Only the Java solution is included. The inherited launcher lists other languages, but their implementations are absent from this repository. Local compilation has a 60-second timeout; each request file or test batch has a 20-second timeout.
 
-Прохождение публичных и дополнительных проверок не гарантирует прохождение недоступных скрытых тестов преподавателя.
+Passing public and student checks does not guarantee results on unavailable instructor tests.
 
-## Опубликованная версия
+## Deployment
 
-В репозитории нет ссылки на deployed-приложение или конфигурации его развёртывания. Решение запускается локально по инструкции выше. [GitHub-репозиторий](https://github.com/8zellorr8/DAA_asik4) содержит исходный код; GitHub Actions служит для тестирования.
+The repository contains no deployed-application URL or deployment configuration. Run the solution locally using the instructions above. The [GitHub repository](https://github.com/8zellorr8/DAA_asik4) hosts the source; GitHub Actions runs tests.
 
-## Сдача Assignment 4
+## Assignment submission
 
-В `submission.json` выбран язык `Java`; личные данные или номер варианта не требуются. Для Moodle нужно указать точную ссылку на коммит с полным SHA, язык **Java**, затем нажать **Submit assignment**. Используйте коммит с успешным запуском Public checks.
+`submission.json` selects `Java`; a student ID or variant is not required. Submit the exact GitHub commit URL containing the full SHA and the language **Java** in Moodle, then click **Submit assignment**. Choose a commit with a successful Public checks run.
 
-Английский [ANALYSIS.md](ANALYSIS.md) содержит доказательства корректности, сложности, описание тестов, результаты сравнения и раздел об источниках и помощи ИИ.
+[ANALYSIS.md](ANALYSIS.md) contains correctness arguments, complexity bounds, test descriptions, benchmark results, sources and the AI-assistance statement.
