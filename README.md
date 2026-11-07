@@ -19,6 +19,31 @@ The project provides a reproducible way to study and evaluate algorithms. Studen
 
 The implementation reconstructs optimal solutions, handles empty inputs according to each command's contract, includes overlapping matches and resets task state between requests. Total weights and merge costs use 64-bit `long` arithmetic. A separate `ping` command checks program startup.
 
+## Big O: time and space complexity
+
+Big O describes an asymptotic upper bound as input size grows, ignoring constant factors. The bounds below apply to the implemented algorithms, including reconstruction and result construction, but exclude JSON parsing and serialization. Auxiliary space is working memory; output space is listed separately.
+
+Notation: `a` and `b` are the two LCS lengths; `n` is the number of blocks or vertices, or the text length; `m` is the pattern length; `z` is the number of returned matches. For Aho–Corasick, `L` is total pattern length, `S` is the number of trie states including the root, `p` is the number of patterns, `q` is the number of texts, and `T` is their total length. The alphabet has 95 characters.
+
+| Command | Time complexity | Auxiliary space complexity | Output space |
+|---|---|---|---|
+| `lcs` | `O((a+1)*(b+1))` | `O((a+1)*(b+1))` | `O(min(a,b)+1)` |
+| `merge` | `O(n^3+1)` | `O(n^2+1)` | `O(n+1)` |
+| `tree` | `O(n+1)` | `O(n+1)` | `O(n+1)` |
+| `naive` | `O(n*m+n+1)` | `O(1)` | `O(z+1)` |
+| `kmp` | `O(n+m+z+1)` | `O(m+1)` | `O(z+1)` |
+| `rk` | `O(n*m+n+m+1)` worst case | `O(1)` | `O(z+1)` |
+| `suffix` | `O(n*log^2(n+1)+1)` | `O(n+1)` | `O(n+1)` |
+| `aho` | `O(L+95*S+p+T+q*(S+p))` | `O(95*S+p)` | `O(q*(p+1)+1)` |
+
+The `+1` terms account for empty inputs. Total space also includes input storage: `O(a+b+1)` for LCS, `O(n+1)` for merge/tree/suffix, `O(n+m+1)` for single-pattern searches, and `O(L+T+p+q+1)` for Aho–Corasick.
+
+- Rabin–Karp takes `O(n+m+c*m)` for `1 <= m <= n`, where `c` is the number of equal-hash candidate windows. Character verification makes collisions safe but can cause quadratic work. This implementation keeps a rolling hash and uses constant auxiliary space.
+- Suffix-array construction uses prefix doubling with comparison sorting, hence `O(n*log^2(n+1))` for nonempty input. The following Kasai pass takes `O(n+1)` time.
+- Aho–Corasick construction takes `O(L+95*S+p)`. Scanning and reverse-failure count propagation take `O(text_length+S+p)` for each independent text.
+
+Recurrences, correctness arguments, reconstruction and the reasons for these bounds are explained in [ANALYSIS.md](ANALYSIS.md#algorithms).
+
 ## How it works
 
 1. Create a UTF-8 file with one JSON request per line.

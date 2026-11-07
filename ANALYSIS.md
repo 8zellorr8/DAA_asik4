@@ -18,6 +18,12 @@ To process a file: python tools/run.py --input requests.jsonl. The launcher comp
 
 Each request has fresh algorithm state. Strings use printable ASCII, and long stores total costs, weights and counts. The bounds below exclude JSON parsing and serialization.
 
+## Big O notation and memory accounting
+
+Big O gives an asymptotic upper bound on growth, rather than an exact runtime or memory measurement. Time bounds include preprocessing, searching or optimization, reconstruction and result construction. JSON parsing and serialization are excluded. Auxiliary space means working storage, including DP tables, traversal stacks and sorting workspace. Input and output storage are stated separately; total space includes all three categories.
+
+For LCS, a and b denote string lengths. For merge and tree, n is the number of blocks or vertices. For string tasks, n is text length, m is pattern length, z is the number of reported matches and c is the number of equal-hash RK candidates. For Aho–Corasick, L is total pattern length, S is the number of trie states including the root, p is dictionary size and q is the number of texts. Terms such as O(n+1) include the constant work and storage needed for empty inputs. The [README summary table](README.md#big-o-time-and-space-complexity) collects the bounds; the following sections explain each one.
+
 ## Algorithms
 
 ### LCS
